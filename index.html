@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<meta name="robots" content="noindex,nofollow,noarchive"/>
+<meta name="referrer" content="no-referrer"/>
+<title>Портфель-дозор</title>
+<style>
+:root{
+  --bg:#0b1020; --card:#121a36; --card2:#0f1730; --line:#1e2b50;
+  --txt:#e8edff; --mut:#8a97c2; --mut2:#5d6a96;
+  --up:#3fb950; --down:#f85149; --accent:#f5a524; --teal:#34d3c2;
+}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;background:var(--bg);color:var(--txt);
+  font-family:'Segoe UI',system-ui,Arial,sans-serif;-webkit-text-size-adjust:100%}
+body{overflow-x:hidden}
+.wrap{max-width:1120px;margin:0 auto;padding:20px 16px 40px}
+a{color:var(--teal)}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.title{font-size:26px;font-weight:800;letter-spacing:.3px}
+.title .dot{color:var(--accent)}
+.sub{color:var(--mut);font-size:13px;margin-top:4px}
+.badge{font-size:12px;color:var(--mut);background:var(--card);border:1px solid var(--line);
+  border-radius:999px;padding:6px 12px}
+.grid{display:grid;gap:14px}
+.kpis{grid-template-columns:repeat(4,1fr)}
+.two{grid-template-columns:1.05fr .95fr}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;position:relative;overflow:hidden}
+.card h3{margin:0 0 2px;font-size:14px;font-weight:700}
+.card .cap{color:var(--mut2);font-size:12px;margin-bottom:12px}
+.kpi .lbl{color:var(--mut);font-size:12.5px}
+.kpi .big{font-size:30px;font-weight:800;margin-top:6px;line-height:1.05}
+.kpi .big small{font-size:14px;font-weight:600;color:var(--mut2)}
+.kpi .sub2{font-size:12.5px;color:var(--mut2);margin-top:6px}
+.kpi .stripe{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:4px}
+.pos{color:var(--up)} .neg{color:var(--down)}
+.rowbars{display:flex;flex-direction:column;gap:9px}
+.bar{display:grid;grid-template-columns:132px 1fr 96px;align-items:center;gap:10px;font-size:12.5px}
+.bar .nm{color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .track{background:var(--card2);border-radius:7px;height:20px;position:relative;overflow:hidden}
+.bar .fill{position:absolute;top:0;bottom:0;border-radius:7px}
+.bar .val{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.legend{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.legend .li{display:grid;grid-template-columns:12px 1fr auto auto;align-items:center;gap:9px;font-size:12.5px}
+.legend .sw{width:11px;height:11px;border-radius:3px}
+.legend .lp{color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.legend .lv{color:var(--mut2);font-variant-numeric:tabular-nums}
+.legend .lpct{font-weight:700;font-variant-numeric:tabular-nums;min-width:44px;text-align:right}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th,td{padding:9px 8px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+th{color:var(--mut2);font-weight:600;border-bottom:1px solid var(--line);font-size:11.5px;text-transform:uppercase;letter-spacing:.4px}
+td{border-bottom:1px solid rgba(30,43,80,.5)}
+th.l,td.l{text-align:left}
+tr:last-child td{border-bottom:none}
+.tag{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:7px;vertical-align:middle}
+.muted{color:var(--mut)}
+.reinvest{border:1px solid #3a3016;background:linear-gradient(180deg,#1c1710,#141021)}
+.reinvest .amt{font-size:26px;font-weight:800;color:var(--accent)}
+.clist{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.clist .ci{display:grid;grid-template-columns:64px 1fr auto;gap:10px;align-items:center;font-size:12.5px;
+  padding:8px 10px;background:var(--card2);border-radius:9px}
+.clist .cd{color:var(--accent);font-weight:700;font-variant-numeric:tabular-nums}
+.clist .cc{font-weight:700;font-variant-numeric:tabular-nums}
+.ev{display:flex;gap:10px;align-items:baseline;font-size:13px;padding:7px 0;border-bottom:1px solid rgba(30,43,80,.5)}
+.ev:last-child{border-bottom:none}
+.ev .d{color:var(--accent);font-weight:700;white-space:nowrap}
+.alert{border:1px solid #5a1e1e;background:linear-gradient(180deg,#241014,#141021)}
+.alert .a{font-size:13px;padding:4px 0;color:#ffb4b4}
+.sec-title{font-size:12px;color:var(--mut2);text-transform:uppercase;letter-spacing:.6px;margin:26px 2px 10px}
+.foot{color:var(--mut2);font-size:11.5px;margin-top:26px;text-align:center;line-height:1.7}
+.pill{font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--mut)}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+@media(max-width:860px){
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .two{grid-template-columns:1fr}
+  .bar{grid-template-columns:112px 1fr 84px}
+  .title{font-size:22px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <div>
+      <div class="title">Портфель<span class="dot">·</span>дозор</div>
+      <div class="sub" id="sub"></div>
+    </div>
+    <div class="badge" id="asof"></div>
+  </div>
+
+  <div id="alerts"></div>
+
+  <div class="grid kpis" id="kpis"></div>
+
+  <div class="grid two" style="margin-top:14px">
+    <div class="card">
+      <h3>Распределение по позициям</h3>
+      <div class="cap">доля в оценке счёта</div>
+      <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+        <div id="donut"></div>
+        <div class="legend" id="legend" style="flex:1;min-width:220px"></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>P&amp;L по позициям</h3>
+      <div class="cap">переоценка к цене входа, ₽</div>
+      <div class="rowbars" id="pnlbars"></div>
+    </div>
+  </div>
+
+  <div class="grid two" style="margin-top:14px">
+    <div class="card">
+      <h3>Лесенка погашений</h3>
+      <div class="cap">облигации по дате погашения · размер = оценка позиции</div>
+      <div class="rowbars" id="ladder"></div>
+    </div>
+    <div class="card reinvest" id="reinvest-card">
+      <h3>💰 К реинвесту</h3>
+      <div class="cap" id="reinvest-cap"></div>
+      <div class="amt" id="reinvest-amt"></div>
+      <div class="clist" id="reinvest-list"></div>
+    </div>
+  </div>
+
+  <div class="sec-title">Позиции счёта</div>
+  <div class="card" style="padding:8px 10px">
+    <div class="scroll"><table id="postbl"></table></div>
+  </div>
+
+  <div class="grid two" style="margin-top:14px">
+    <div class="card">
+      <h3>Ближайшие купоны</h3>
+      <div class="cap">поступления денег в счёт</div>
+      <div class="clist" id="coupons"></div>
+    </div>
+    <div class="card">
+      <h3>👀 Наблюдение</h3>
+      <div class="cap">не входит в итог по счёту</div>
+      <div class="scroll"><table id="watchtbl"></table></div>
+      <div id="events-wrap" style="margin-top:14px"></div>
+    </div>
+  </div>
+
+  <div class="foot" id="foot"></div>
+</div>
+
+<script>
+const DATA = {"generated":"24.07.2026 10:23","generated_date":"2026-07-24","positions":[{"name":"ОФЗ 26233","asset":"bond","id":"SU26233RMFS5","currency":"RUB","watch":false,"price":55.804,"unit":"%","day_pct":-0.14,"ytm":15.9079,"duration_years":5.934246575342466,"maturity":"2035-07-18","maturity_disp":"18.07.2035","coupon_val":30.42,"coupon_pct":6.1,"next_coupon":"2026-07-29","nkd":30.09,"qty":346,"invested":206001.32,"value_now":203492.98,"pnl_abs":-2508.3399999999965,"pnl_pct":-1.2176329743906478,"status":"✅ в норме","color":"#34d3c2"},{"name":"ОФЗ 26238","asset":"bond","id":"SU26238RMFS4","currency":"RUB","watch":false,"price":52.301,"unit":"%","day_pct":-0.42,"ytm":15.9205,"duration_years":7.0849315068493155,"maturity":"2041-05-15","maturity_disp":"15.05.2041","coupon_val":35.4,"coupon_pct":7.1,"next_coupon":"2026-12-02","nkd":10.5,"qty":60,"invested":34538.83,"value_now":32010.6,"pnl_abs":-2528.230000000003,"pnl_pct":-7.319964225771408,"status":"✅ в норме","color":"#f5a524"},{"name":"ОФЗ 26249","asset":"bond","id":"SU26249RMFS1","currency":"RUB","watch":false,"price":84.37,"unit":"%","day_pct":-0.03,"ytm":15.6596,"duration_years":4.298630136986302,"maturity":"2032-06-16","maturity_disp":"16.06.2032","coupon_val":54.85,"coupon_pct":11.0,"next_coupon":"2026-12-23","nkd":9.95,"qty":221,"invested":195505.44,"value_now":188656.65000000002,"pnl_abs":-6848.789999999979,"pnl_pct":-3.5031199131850133,"status":"✅ в норме","color":"#6ea8fe"},{"name":"ОФЗ 26254","asset":"bond","id":"SU26254RMFS1","currency":"RUB","watch":false,"price":85.145,"unit":"%","day_pct":-0.56,"ytm":16.232,"duration_years":6.038356164383561,"maturity":"2040-10-03","maturity_disp":"03.10.2040","coupon_val":64.82,"coupon_pct":13.0,"next_coupon":"2026-10-21","nkd":34.19,"qty":219,"invested":210163.13,"value_now":193955.15999999997,"pnl_abs":-16207.97000000003,"pnl_pct":-7.712090127321586,"status":"✅ в норме","color":"#c98bff"},{"name":"ОФЗ 26247","asset":"bond","id":"SU26247RMFS5","currency":"RUB","watch":false,"price":81.699,"unit":"%","day_pct":-0.37,"ytm":16.1903,"duration_years":6.021917808219178,"maturity":"2039-05-11","maturity_disp":"11.05.2039","coupon_val":61.08,"coupon_pct":12.25,"next_coupon":"2026-11-25","nkd":20.47,"qty":20,"invested":16758.4,"value_now":16749.2,"pnl_abs":-9.200000000000728,"pnl_pct":-0.05489784227611661,"status":"✅ в норме","color":"#3fb950"},{"name":"ВИМ Ликвидность","asset":"etf","id":"LQDT","currency":"RUB","watch":false,"price":2.0466,"unit":"₽","day_pct":0.11,"ytm":null,"duration_years":null,"maturity":null,"maturity_disp":null,"coupon_val":null,"coupon_pct":null,"next_coupon":null,"nkd":null,"qty":1630,"invested":3198.24,"value_now":3335.9580000000005,"pnl_abs":137.71800000000076,"pnl_pct":4.306055830706913,"status":"✅ в норме (стоп — / тейк —)","avg_price":1.9621104294478526,"dividend":null,"color":"#f7768e"},{"name":"ОФЗ 33 CNY","asset":"bond","id":"RU000A10DQA8","currency":"CNY","watch":false,"price":94.625,"unit":"%","day_pct":-0.14,"ytm":8.117,"duration_years":5.468493150684932,"maturity":"2033-06-01","maturity_disp":"01.06.2033","coupon_val":349.04,"coupon_pct":7.0,"next_coupon":"2026-12-09","nkd":1044.055564,"qty":1,"invested":111227.43,"value_now":110364.318064,"pnl_abs":-863.1119359999866,"pnl_pct":-0.7759883834410151,"status":"✅ в норме","color":"#e0af68"},{"name":"ВЭБ2Р-54В","asset":"bond","id":"RU000A10CTX6","currency":"USD","watch":false,"price":95.3263,"unit":"%","day_pct":-0.29,"ytm":8.7738,"duration_years":3.5452054794520547,"maturity":"2030-08-31","maturity_disp":"31.08.2030","coupon_val":5.88,"coupon_pct":7.15,"next_coupon":"2026-08-22","nkd":61.155822,"qty":1,"invested":75015.77,"value_now":75099.63602450001,"pnl_abs":83.86602450000646,"pnl_pct":0.11179785863693255,"status":"✅ в норме","color":"#7dcfff"}],"watch":[{"name":"Сбер (наблюдение)","asset":"share","id":"SBER","currency":"RUB","watch":true,"price":260.48,"unit":"₽","day_pct":-1.19,"ytm":null,"duration_years":null,"maturity":null,"maturity_disp":null,"coupon_val":null,"coupon_pct":null,"next_coupon":null,"nkd":null,"qty":77,"invested":19936.84,"value_now":20056.960000000003,"pnl_abs":120.12000000000262,"pnl_pct":0.6025027035377853,"status":"✅ в норме (стоп 220 / тейк 350)","avg_price":258.92,"dividend":"последняя отсечка 18.07.2025 · 34,84 ₽","color":"#5d6a96"},{"name":"Озон (наблюдение)","asset":"share","id":"OZON","currency":"RUB","watch":true,"price":2644,"unit":"₽","day_pct":-3.01,"ytm":null,"duration_years":null,"maturity":null,"maturity_disp":null,"coupon_val":null,"coupon_pct":null,"next_coupon":null,"nkd":null,"qty":10,"invested":28760.0,"value_now":26440,"pnl_abs":-2320.0,"pnl_pct":-8.066759388038943,"status":"✅ в норме (стоп 2 400 / тейк 4 500)","avg_price":2876.0,"dividend":null,"color":"#5d6a96"}],"totals":{"invested":852408.56,"now":823664.5020885,"pnl_abs":-28744.057911500102,"pnl_pct":-3.372098693084464,"wytm":14.232406735659902,"wdur":5.348026008990484,"count":8},"alloc":[{"name":"ОФЗ 26233","color":"#34d3c2","value":203492.98,"pct":24.70580915943557},{"name":"ОФЗ 26254","color":"#c98bff","value":193955.15999999997,"pct":23.547835254306023},{"name":"ОФЗ 26249","color":"#6ea8fe","value":188656.65000000002,"pct":22.90455027764806},{"name":"ОФЗ 33 CNY","color":"#e0af68","value":110364.318064,"pct":13.399183500582831},{"name":"ВЭБ2Р-54В","color":"#7dcfff","value":75099.63602450001,"pct":9.117745858183264},{"name":"ОФЗ 26238","color":"#f5a524","value":32010.6,"pct":3.886363916234497},{"name":"ОФЗ 26247","color":"#3fb950","value":16749.2,"pct":2.0334978571409112},{"name":"ВИМ Ликвидность","color":"#f7768e","value":3335.9580000000005,"pct":0.4050141764688511}],"coupons_up":[{"name":"ОФЗ 26233","date":"2026-07-29","cash":10525.32},{"name":"ВЭБ2Р-54В","date":"2026-08-22","cash":462.8589},{"name":"ОФЗ 26254","date":"2026-10-21","cash":14195.579999999998},{"name":"ОФЗ 26247","date":"2026-11-25","cash":1221.6},{"name":"ОФЗ 26238","date":"2026-12-02","cash":2124.0},{"name":"ОФЗ 33 CNY","date":"2026-12-09","cash":4032.4591200000004},{"name":"ОФЗ 26249","date":"2026-12-23","cash":12121.85}],"paid_coupons":[{"name":"ВЭБ2Р-54В","secid":"RU000A10CTX6","date":"2026-07-23","date_disp":"23.07","per_bond":5.88,"qty":1,"cash":462.8589},{"name":"ОФЗ 26249","secid":"SU26249RMFS1","date":"2026-06-24","date_disp":"24.06","per_bond":54.85,"qty":221,"cash":12121.85}],"paid_total":12584.7089,"reinvest_lookback_days":30,"events":[{"date":"2026-07-25","text":"Ожидаемое заседание ЦБ по ключевой ставке — сверь дату на cbr.ru"}],"alerts":[]};
+const NB=" "; // узкий неразрывный пробел
+const MON=["янв","фев","мар","апр","май","июн","июл","авг","сен","окт","ноя","дек"];
+function fi(n){ if(n===null||n===undefined||isNaN(n)) return "—";
+  n=Math.round(n); let neg=n<0; let s=Math.abs(n).toString(), o="";
+  for(let i=0;i<s.length;i++){ if(i>0&&(s.length-i)%3===0)o+=NB; o+=s[i]; }
+  return (neg?"−":"")+o; }
+function f1(n){ if(n===null||n===undefined||isNaN(n)) return "—";
+  return (n<0?"−":"")+Math.abs(n).toFixed(1).replace(".",","); }
+function f2(n){ if(n===null||n===undefined||isNaN(n)) return "—";
+  return (n<0?"−":"")+Math.abs(n).toFixed(2).replace(".",","); }
+function dlab(iso){ if(!iso) return "—"; const [y,m,d]=iso.split("-"); return d+NB+MON[+m-1]; }
+function dfull(iso){ if(!iso) return "—"; const [y,m,d]=iso.split("-"); return d+"."+m+"."+y; }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function el(html){ const t=document.createElement("template"); t.innerHTML=html.trim(); return t.content.firstChild; }
+
+const T=DATA.totals;
+
+// ---- subtitle / asof
+document.getElementById("sub").textContent =
+  T.count+" позиций · ср.YTM "+f1(T.wytm)+"% · дюрация "+f1(T.wdur)+" г";
+document.getElementById("asof").textContent = "обновлено "+DATA.generated;
+
+// ---- alerts
+if(DATA.alerts && DATA.alerts.length){
+  const c=el('<div class="card alert" style="margin-bottom:14px"><h3 style="color:#ffb4b4">🚨 Алерты</h3></div>');
+  DATA.alerts.forEach(a=>c.appendChild(el('<div class="a">• '+esc(a)+'</div>')));
+  document.getElementById("alerts").appendChild(c);
+}
+
+// ---- KPI cards
+const pnlCls = T.pnl_abs>=0?"pos":"neg";
+const pnlSign = T.pnl_abs>=0?"+":"";
+const kpis=[
+  {lbl:"Вложено", big:fi(T.invested)+' <small>₽</small>', sub:T.count+" позиций", stripe:"#6ea8fe"},
+  {lbl:"Оценка сейчас", big:fi(T.now)+' <small>₽</small>', sub:"рыночная стоимость", stripe:"#34d3c2"},
+  {lbl:"Результат P&L", big:'<span class="'+pnlCls+'">'+pnlSign+fi(T.pnl_abs)+' <small>₽</small></span>',
+     sub:'<span class="'+pnlCls+'">'+pnlSign+f1(T.pnl_pct)+"%</span> к вложенному", stripe:T.pnl_abs>=0?"#3fb950":"#f85149"},
+  {lbl:"Средневзв. YTM", big:f1(T.wytm)+' <small>%</small>', sub:"дюрация "+f1(T.wdur)+" года", stripe:"#f5a524"},
+];
+const kw=document.getElementById("kpis");
+kpis.forEach(k=>kw.appendChild(el(
+  '<div class="card kpi"><div class="stripe" style="background:'+k.stripe+'"></div>'+
+  '<div class="lbl">'+k.lbl+'</div><div class="big">'+k.big+'</div>'+
+  '<div class="sub2">'+k.sub+'</div></div>')));
+
+// ---- donut (allocation)
+(function(){
+  const A=DATA.alloc; const R=78, r=48, cx=90, cy=90; let ang=-Math.PI/2;
+  let svg='<svg width="180" height="180" viewBox="0 0 180 180">';
+  A.forEach(a=>{
+    const frac=a.pct/100; const a2=ang+frac*2*Math.PI;
+    const x1=cx+R*Math.cos(ang), y1=cy+R*Math.sin(ang);
+    const x2=cx+R*Math.cos(a2), y2=cy+R*Math.sin(a2);
+    const xi2=cx+r*Math.cos(a2), yi2=cy+r*Math.sin(a2);
+    const xi1=cx+r*Math.cos(ang), yi1=cy+r*Math.sin(ang);
+    const big=frac>0.5?1:0;
+    svg+='<path d="M'+x1+' '+y1+' A'+R+' '+R+' 0 '+big+' 1 '+x2+' '+y2+
+         ' L'+xi2+' '+yi2+' A'+r+' '+r+' 0 '+big+' 0 '+xi1+' '+yi1+
+         ' Z" fill="'+a.color+'" opacity="0.92"/>';
+    ang=a2;
+  });
+  svg+='<text x="90" y="84" text-anchor="middle" fill="#e8edff" font-size="15" font-weight="800">'+fi(T.now/1000)+'к</text>';
+  svg+='<text x="90" y="104" text-anchor="middle" fill="#5d6a96" font-size="11">оценка ₽</text></svg>';
+  document.getElementById("donut").innerHTML=svg;
+  const lg=document.getElementById("legend");
+  A.forEach(a=>lg.appendChild(el(
+    '<div class="li"><span class="sw" style="background:'+a.color+'"></span>'+
+    '<span class="lp">'+esc(a.name)+'</span>'+
+    '<span class="lv">'+fi(a.value)+' ₽</span>'+
+    '<span class="lpct">'+f1(a.pct)+'%</span></div>')));
+})();
+
+// ---- P&L bars
+(function(){
+  const P=DATA.positions.slice().sort((a,b)=>(a.pnl_abs||0)-(b.pnl_abs||0));
+  const mx=Math.max(1,...P.map(p=>Math.abs(p.pnl_abs||0)));
+  const box=document.getElementById("pnlbars");
+  P.forEach(p=>{
+    const v=p.pnl_abs||0; const w=Math.abs(v)/mx*100;
+    const up=v>=0; const col=up?"#3fb950":"#f85149";
+    const half='<div class="track"><div class="fill" style="'+(up?"left:50%":"right:50%")+
+      ';width:'+(w/2)+'%;background:'+col+'"></div>'+
+      '<div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:#2a3a63"></div></div>';
+    box.appendChild(el('<div class="bar"><span class="nm">'+esc(p.name)+'</span>'+half+
+      '<span class="val '+(up?"pos":"neg")+'">'+(up?"+":"−")+fi(Math.abs(v))+' ₽</span></div>'));
+  });
+})();
+
+// ---- maturity ladder (bonds only)
+(function(){
+  const B=DATA.positions.filter(p=>p.asset==="bond"&&p.maturity)
+    .sort((a,b)=>a.maturity<b.maturity?-1:1);
+  const mx=Math.max(1,...B.map(p=>p.value_now||0));
+  const box=document.getElementById("ladder");
+  if(!B.length){ box.innerHTML='<div class="muted">нет облигаций</div>'; return; }
+  B.forEach(p=>{
+    const w=(p.value_now||0)/mx*100;
+    const yr=p.maturity.slice(0,4);
+    const bar='<div class="track"><div class="fill" style="left:0;width:'+w+'%;background:'+p.color+
+      ';opacity:.9"></div><span style="position:absolute;left:8px;top:2px;font-size:11px;color:#0b1020;font-weight:700">'+
+      f1(p.ytm)+'%</span></div>';
+    box.appendChild(el('<div class="bar"><span class="nm">'+esc(p.name)+' · '+yr+'</span>'+bar+
+      '<span class="val">'+fi(p.value_now)+' ₽</span></div>'));
+  });
+})();
+
+// ---- reinvest card
+(function(){
+  const PC=DATA.paid_coupons; const card=document.getElementById("reinvest-card");
+  document.getElementById("reinvest-cap").textContent =
+    "выплаченные купоны за "+DATA.reinvest_lookback_days+" дн — переложи в бумаги";
+  document.getElementById("reinvest-amt").textContent = fi(DATA.paid_total)+" ₽";
+  const list=document.getElementById("reinvest-list");
+  if(!PC.length){ list.innerHTML='<div class="muted">за период купонов не было</div>';
+    document.getElementById("reinvest-amt").textContent="0 ₽"; return; }
+  PC.forEach(c=>list.appendChild(el(
+    '<div class="ci"><span class="cd">'+esc(c.date_disp)+'</span>'+
+    '<span>'+esc(c.name)+'</span>'+
+    '<span class="cc">'+fi(c.cash)+' ₽</span></div>')));
+})();
+
+// ---- positions table
+(function(){
+  const tb=document.getElementById("postbl");
+  tb.innerHTML='<thead><tr>'+
+    '<th class="l">Бумага</th><th>Цена</th><th>За день</th><th>YTM</th><th>Дюр.</th>'+
+    '<th>Погашение</th><th>Вложено</th><th>Сейчас</th><th>P&L ₽</th><th>P&L %</th><th class="l">Купон</th>'+
+    '</tr></thead><tbody></tbody>';
+  const body=tb.querySelector("tbody");
+  DATA.positions.forEach(p=>{
+    const dc=(p.day_pct||0)>=0?"pos":"neg";
+    const pc=(p.pnl_abs||0)>=0?"pos":"neg";
+    const priceTxt = p.unit==="%"? f2(p.price)+"%" : f2(p.price)+" ₽";
+    const cpn = p.next_coupon? (p.coupon_val!=null? fi(p.coupon_val)+" ₽ · "+dlab(p.next_coupon):dlab(p.next_coupon)) : "—";
+    body.appendChild(el('<tr>'+
+      '<td class="l"><span class="tag" style="background:'+p.color+'"></span>'+esc(p.name)+
+        ' <span class="muted" style="font-size:11px">'+esc(p.id)+(p.currency!=="RUB"?" · "+p.currency:"")+'</span></td>'+
+      '<td>'+priceTxt+'</td>'+
+      '<td class="'+dc+'">'+((p.day_pct||0)>=0?"+":"−")+f2(Math.abs(p.day_pct||0))+'%</td>'+
+      '<td>'+(p.ytm!=null?f1(p.ytm)+"%":"—")+'</td>'+
+      '<td>'+(p.duration_years!=null?f1(p.duration_years):"—")+'</td>'+
+      '<td>'+(p.maturity_disp||"—")+'</td>'+
+      '<td>'+fi(p.invested)+'</td>'+
+      '<td>'+fi(p.value_now)+'</td>'+
+      '<td class="'+pc+'">'+((p.pnl_abs||0)>=0?"+":"−")+fi(Math.abs(p.pnl_abs||0))+'</td>'+
+      '<td class="'+pc+'">'+((p.pnl_abs||0)>=0?"+":"−")+f1(Math.abs(p.pnl_pct||0))+'%</td>'+
+      '<td class="l muted">'+cpn+'</td>'+
+    '</tr>'));
+  });
+})();
+
+// ---- upcoming coupons
+(function(){
+  const C=DATA.coupons_up; const box=document.getElementById("coupons");
+  if(!C.length){ box.innerHTML='<div class="muted">нет данных</div>'; return; }
+  C.forEach(c=>box.appendChild(el(
+    '<div class="ci"><span class="cd">'+dlab(c.date)+'</span>'+
+    '<span>'+esc(c.name)+'</span>'+
+    '<span class="cc pos">+'+fi(c.cash)+' ₽</span></div>')));
+})();
+
+// ---- watch table
+(function(){
+  const W=DATA.watch; const tb=document.getElementById("watchtbl");
+  if(!W.length){ tb.innerHTML='<tr><td class="muted">нет</td></tr>'; return; }
+  tb.innerHTML='<thead><tr><th class="l">Бумага</th><th>Цена</th><th>За день</th><th>P&L %</th></tr></thead><tbody></tbody>';
+  const body=tb.querySelector("tbody");
+  W.forEach(p=>{
+    const dc=(p.day_pct||0)>=0?"pos":"neg"; const pc=(p.pnl_abs||0)>=0?"pos":"neg";
+    body.appendChild(el('<tr>'+
+      '<td class="l">'+esc(p.name.replace(" (наблюдение)",""))+'</td>'+
+      '<td>'+f2(p.price)+' ₽</td>'+
+      '<td class="'+dc+'">'+((p.day_pct||0)>=0?"+":"−")+f2(Math.abs(p.day_pct||0))+'%</td>'+
+      '<td class="'+pc+'">'+((p.pnl_abs||0)>=0?"+":"−")+f1(Math.abs(p.pnl_pct||0))+'%</td>'+
+    '</tr>'));
+  });
+})();
+
+// ---- events
+(function(){
+  const E=DATA.events; const w=document.getElementById("events-wrap");
+  if(!E.length) return;
+  w.appendChild(el('<div class="cap" style="margin-bottom:4px">📅 События</div>'));
+  E.forEach(e=>w.appendChild(el('<div class="ev"><span class="d">'+dfull(e.date)+'</span><span>'+esc(e.text)+'</span></div>')));
+})();
+
+// ---- footer
+document.getElementById("foot").innerHTML =
+  "Источник котировок: ISS Московской биржи (iss.moex.com) · данные с задержкой ~15 мин.<br>"+
+  "Личный дашборд портфеля. Сформировано агентом «Портфель-дозор» · "+DATA.generated+".";
+</script>
+</body>
+</html>
