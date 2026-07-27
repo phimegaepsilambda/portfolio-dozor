@@ -75,15 +75,17 @@ tr:last-child td{border-bottom:none}
 .wtick{color:var(--mut2);font-size:11px;margin-left:6px}
 .wprice{font-weight:700;font-variant-numeric:tabular-nums}
 .wday{font-size:11.5px;margin-left:8px;font-variant-numeric:tabular-nums}
-.wstats{display:flex;gap:14px;flex-wrap:wrap;color:var(--mut);font-size:12px;margin-top:8px}
-.wstats b{color:var(--txt);font-weight:600;font-variant-numeric:tabular-nums}
-.wstats b.pos{color:var(--up)} .wstats b.neg{color:var(--down)}
-.gauge{margin-top:12px}
-.gtrack{position:relative;height:8px;border-radius:4px;background:var(--card)}
-.gfill{position:absolute;top:0;bottom:0;border-radius:4px;opacity:.55}
-.gentry{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--mut);transform:translateX(-1px)}
-.gdot{position:absolute;top:50%;width:12px;height:12px;border-radius:50%;transform:translate(-6px,-50%);border:2px solid var(--bg)}
-.glabels{display:flex;justify-content:space-between;color:var(--mut2);font-size:10.5px;margin-top:5px;font-variant-numeric:tabular-nums}
+.bs{display:flex;gap:26px;align-items:flex-end;margin-top:14px;padding:0 4px}
+.bscol{display:flex;flex-direction:column;align-items:center;gap:4px;flex:0 0 auto}
+.bsbar{width:64px;border-radius:7px 7px 2px 2px;opacity:.92}
+.bsval{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
+.bslbl{font-size:10.5px;color:var(--mut2)}
+.bsdelta{font-size:14px;font-weight:800;margin-left:6px;align-self:center;font-variant-numeric:tabular-nums;line-height:1.35}
+.bsdelta span{font-size:11.5px;font-weight:700}
+.grandrow{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;align-items:baseline}
+.grandrow .gr{display:flex;gap:22px;flex-wrap:wrap;font-size:13px;color:var(--mut)}
+.grandrow .gr b{color:var(--txt);font-variant-numeric:tabular-nums;font-weight:700}
+.grandrow .gr b.pos{color:var(--up)} .grandrow .gr b.neg{color:var(--down)}
 .sec-title{font-size:12px;color:var(--mut2);text-transform:uppercase;letter-spacing:.6px;margin:26px 2px 10px}
 .foot{color:var(--mut2);font-size:11.5px;margin-top:26px;text-align:center;line-height:1.7}
 .pill{font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--mut)}
@@ -109,6 +111,8 @@ tr:last-child td{border-bottom:none}
   <div id="alerts"></div>
 
   <div class="grid kpis" id="kpis"></div>
+
+  <div class="card" id="grand" style="margin-top:14px;display:none"></div>
 
   <div class="grid two" style="margin-top:14px">
     <div class="card">
@@ -163,7 +167,7 @@ tr:last-child td{border-bottom:none}
 </div>
 
 <script>
-const DATA = {"generated":"27.07.2026 10:48","generated_date":"2026-07-27","positions":[{"name":"ОФЗ 26233","asset":"bond","id":"SU26233RMFS5","currency":"RUB","watch":false,"price":57.139,"unit":"%","day_pct":0.25,"ytm":15.4728,"duration_years":5.972602739726027,"maturity":"2035-07-18","maturity_disp":"18.07.2035","coupon_val":30.42,"coupon_pct":6.1,"next_coupon":"2026-07-29","nkd":30.25,"qty":346,"invested":206001.32,"value_now":208167.44000000003,"pnl_abs":2166.1200000000244,"pnl_pct":1.051507825289675,"status":"✅ в норме","color":"#34d3c2"},{"name":"ОФЗ 26238","asset":"bond","id":"SU26238RMFS4","currency":"RUB","watch":false,"price":53.72,"unit":"%","day_pct":0.28,"ytm":15.5001,"duration_years":7.183561643835616,"maturity":"2041-05-15","maturity_disp":"15.05.2041","coupon_val":35.4,"coupon_pct":7.1,"next_coupon":"2026-12-02","nkd":10.7,"qty":60,"invested":34538.83,"value_now":32874.00000000001,"pnl_abs":-1664.8299999999945,"pnl_pct":-4.820169067684095,"status":"✅ в норме","color":"#f5a524"},{"name":"ОФЗ 26249","asset":"bond","id":"SU26249RMFS1","currency":"RUB","watch":false,"price":86.063,"unit":"%","day_pct":-0.1,"ytm":15.1225,"duration_years":4.315068493150685,"maturity":"2032-06-16","maturity_disp":"16.06.2032","coupon_val":54.85,"coupon_pct":11.0,"next_coupon":"2026-12-23","nkd":10.25,"qty":221,"invested":195505.44,"value_now":192464.48,"pnl_abs":-3040.959999999992,"pnl_pct":-1.5554349792005746,"status":"✅ в норме","color":"#6ea8fe"},{"name":"ОФЗ 26254","asset":"bond","id":"SU26254RMFS1","currency":"RUB","watch":false,"price":87.261,"unit":"%","day_pct":-0.33,"ytm":15.7737,"duration_years":6.126027397260274,"maturity":"2040-10-03","maturity_disp":"03.10.2040","coupon_val":64.82,"coupon_pct":13.0,"next_coupon":"2026-10-21","nkd":34.55,"qty":219,"invested":210163.13,"value_now":198668.03999999998,"pnl_abs":-11495.090000000026,"pnl_pct":-5.469603540830414,"status":"✅ в норме","color":"#c98bff"},{"name":"ОФЗ 26247","asset":"bond","id":"SU26247RMFS5","currency":"RUB","watch":false,"price":83.699,"unit":"%","day_pct":-0.18,"ytm":15.7582,"duration_years":6.093150684931507,"maturity":"2039-05-11","maturity_disp":"11.05.2039","coupon_val":61.08,"coupon_pct":12.25,"next_coupon":"2026-11-25","nkd":20.81,"qty":20,"invested":16758.4,"value_now":17156.0,"pnl_abs":397.59999999999854,"pnl_pct":2.3725415314111045,"status":"✅ в норме","color":"#3fb950"},{"name":"ВИМ Ликвидность","asset":"etf","id":"LQDT","currency":"RUB","watch":false,"price":2.0474,"unit":"₽","day_pct":0.03,"ytm":null,"duration_years":null,"maturity":null,"maturity_disp":null,"coupon_val":null,"coupon_pct":null,"next_coupon":null,"nkd":null,"qty":1630,"invested":3198.24,"value_now":3337.262,"pnl_abs":139.0220000000004,"pnl_pct":4.34682825554056,"status":"✅ в норме (стоп — / тейк —)","avg_price":1.9621104294478526,"dividend":null,"stop":null,"take":null,"color":"#f7768e"},{"name":"ОФЗ 33 CNY","asset":"bond","id":"RU000A10DQA8","currency":"CNY","watch":false,"price":95.2,"unit":"%","day_pct":0.27,"ytm":8.0761,"duration_years":5.465753424657534,"maturity":"2033-06-01","maturity_disp":"01.06.2033","coupon_val":349.04,"coupon_pct":7.0,"next_coupon":"2026-12-09","nkd":1058.805125,"qty":1,"invested":111227.43,"value_now":110886.285125,"pnl_abs":-341.14487499999814,"pnl_pct":-0.306709302732247,"status":"✅ в норме","color":"#e0af68"},{"name":"ВЭБ2Р-54В","asset":"bond","id":"RU000A10CTX6","currency":"USD","watch":false,"price":96.5791,"unit":"%","day_pct":1.43,"ytm":8.4498,"duration_years":3.5452054794520547,"maturity":"2030-08-31","maturity_disp":"31.08.2030","coupon_val":5.88,"coupon_pct":7.15,"next_coupon":"2026-08-22","nkd":76.470184,"qty":1,"invested":75015.77,"value_now":75987.642784,"pnl_abs":971.872783999992,"pnl_pct":1.2955579660116692,"status":"✅ в норме","color":"#7dcfff"}],"watch":[{"name":"Сбер (наблюдение)","asset":"share","id":"SBER","currency":"RUB","watch":true,"price":270.16,"unit":"₽","day_pct":0.96,"ytm":null,"duration_years":null,"maturity":null,"maturity_disp":null,"coupon_val":null,"coupon_pct":null,"next_coupon":null,"nkd":null,"qty":77,"invested":19936.84,"value_now":20802.320000000003,"pnl_abs":865.4800000000032,"pnl_pct":4.341109222926017,"status":"✅ в норме (стоп 220 / тейк 350)","avg_price":258.92,"dividend":"последняя отсечка 18.07.2025 · 34,84 ₽","stop":220,"take":350,"color":"#3fb950"},{"name":"Озон (наблюдение)","asset":"share","id":"OZON","currency":"RUB","watch":true,"price":2822.5,"unit":"₽","day_pct":6.63,"ytm":null,"duration_years":null,"maturity":null,"maturity_disp":null,"coupon_val":null,"coupon_pct":null,"next_coupon":null,"nkd":null,"qty":10,"invested":28760.0,"value_now":28225.0,"pnl_abs":-535.0,"pnl_pct":-1.8602225312934633,"status":"⚡ движение +6,6% за день","avg_price":2876.0,"dividend":null,"stop":2400,"take":4500,"color":"#6ea8fe"}],"totals":{"deposits":800000.0,"now":839541.149909,"profit":39541.14990900003,"profit_pct":4.942643738625003,"irr":0.09583845191763529,"cost_basis":852408.56,"price_pnl":-12867.410091000027,"price_pnl_pct":-1.5095355319988841,"reinvested":52408.560000000056,"wytm":13.851543352468537,"wdur":5.3898339342844555,"count":8},"alloc":[{"name":"ОФЗ 26233","color":"#34d3c2","value":208167.44000000003,"pct":24.795382575656216},{"name":"ОФЗ 26254","color":"#c98bff","value":198668.03999999998,"pct":23.66388354180544},{"name":"ОФЗ 26249","color":"#6ea8fe","value":192464.48,"pct":22.92496085759009},{"name":"ОФЗ 33 CNY","color":"#e0af68","value":110886.285125,"pct":13.207963080430213},{"name":"ВЭБ2Р-54В","color":"#7dcfff","value":75987.642784,"pct":9.051092110522099},{"name":"ОФЗ 26238","color":"#f5a524","value":32874.00000000001,"pct":3.9157103857938713},{"name":"ОФЗ 26247","color":"#3fb950","value":17156.0,"pct":2.043497212954908},{"name":"ВИМ Ликвидность","color":"#f7768e","value":3337.262,"pct":0.3975102352471626}],"coupons_up":[{"name":"ОФЗ 26233","date":"2026-07-29","cash":10525.32},{"name":"ВЭБ2Р-54В","date":"2026-08-22","cash":462.16799999999995},{"name":"ОФЗ 26254","date":"2026-10-21","cash":14195.579999999998},{"name":"ОФЗ 26247","date":"2026-11-25","cash":1221.6},{"name":"ОФЗ 26238","date":"2026-12-02","cash":2124.0},{"name":"ОФЗ 33 CNY","date":"2026-12-09","cash":4026.6999600000004},{"name":"ОФЗ 26249","date":"2026-12-23","cash":12121.85}],"paid_coupons":[{"name":"ВЭБ2Р-54В","secid":"RU000A10CTX6","date":"2026-07-23","date_disp":"23.07","per_bond":5.88,"qty":1,"cash":462.16799999999995}],"paid_total":462.16799999999995,"reinvest_lookback_days":30,"events":[],"alerts":["OZON: сильное движение +6,6% за день"]};
+const DATA = {"generated":"27.07.2026 10:56","generated_date":"2026-07-27","positions":[{"name":"ОФЗ 26233","asset":"bond","id":"SU26233RMFS5","currency":"RUB","watch":false,"price":57.101,"unit":"%","day_pct":0.18,"ytm":15.4737,"duration_years":5.972602739726027,"maturity":"2035-07-18","maturity_disp":"18.07.2035","coupon_val":30.42,"coupon_pct":6.1,"next_coupon":"2026-07-29","nkd":30.25,"qty":346,"invested":206001.32,"value_now":208035.96,"pnl_abs":2034.6399999999849,"pnl_pct":0.9876829915458721,"status":"✅ в норме","color":"#34d3c2"},{"name":"ОФЗ 26238","asset":"bond","id":"SU26238RMFS4","currency":"RUB","watch":false,"price":53.717,"unit":"%","day_pct":0.27,"ytm":15.4936,"duration_years":7.183561643835616,"maturity":"2041-05-15","maturity_disp":"15.05.2041","coupon_val":35.4,"coupon_pct":7.1,"next_coupon":"2026-12-02","nkd":10.7,"qty":60,"invested":34538.83,"value_now":32872.200000000004,"pnl_abs":-1666.6299999999974,"pnl_pct":-4.825380593378517,"status":"✅ в норме","color":"#f5a524"},{"name":"ОФЗ 26249","asset":"bond","id":"SU26249RMFS1","currency":"RUB","watch":false,"price":86.149,"unit":"%","day_pct":0,"ytm":15.1084,"duration_years":4.315068493150685,"maturity":"2032-06-16","maturity_disp":"16.06.2032","coupon_val":54.85,"coupon_pct":11.0,"next_coupon":"2026-12-23","nkd":10.25,"qty":221,"invested":195505.44,"value_now":192654.54,"pnl_abs":-2850.899999999994,"pnl_pct":-1.4582202930005397,"status":"✅ в норме","color":"#6ea8fe"},{"name":"ОФЗ 26254","asset":"bond","id":"SU26254RMFS1","currency":"RUB","watch":false,"price":87.471,"unit":"%","day_pct":-0.09,"ytm":15.7367,"duration_years":6.131506849315069,"maturity":"2040-10-03","maturity_disp":"03.10.2040","coupon_val":64.82,"coupon_pct":13.0,"next_coupon":"2026-10-21","nkd":34.55,"qty":219,"invested":210163.13,"value_now":199127.94,"pnl_abs":-11035.190000000002,"pnl_pct":-5.250773530066859,"status":"✅ в норме","color":"#c98bff"},{"name":"ОФЗ 26247","asset":"bond","id":"SU26247RMFS5","currency":"RUB","watch":false,"price":83.699,"unit":"%","day_pct":-0.18,"ytm":15.7387,"duration_years":6.095890410958904,"maturity":"2039-05-11","maturity_disp":"11.05.2039","coupon_val":61.08,"coupon_pct":12.25,"next_coupon":"2026-11-25","nkd":20.81,"qty":20,"invested":16758.4,"value_now":17156.0,"pnl_abs":397.59999999999854,"pnl_pct":2.3725415314111045,"status":"✅ в норме","color":"#3fb950"},{"name":"ВИМ Ликвидность","asset":"etf","id":"LQDT","currency":"RUB","watch":false,"price":2.0474,"unit":"₽","day_pct":0.03,"ytm":null,"duration_years":null,"maturity":null,"maturity_disp":null,"coupon_val":null,"coupon_pct":null,"next_coupon":null,"nkd":null,"qty":1630,"invested":3198.24,"value_now":3337.262,"pnl_abs":139.0220000000004,"pnl_pct":4.34682825554056,"status":"✅ в норме (стоп — / тейк —)","avg_price":1.9621104294478526,"dividend":null,"stop":null,"take":null,"buy_date":null,"color":"#f7768e"},{"name":"ОФЗ 33 CNY","asset":"bond","id":"RU000A10DQA8","currency":"CNY","watch":false,"price":95.2,"unit":"%","day_pct":0.27,"ytm":8.0761,"duration_years":5.465753424657534,"maturity":"2033-06-01","maturity_disp":"01.06.2033","coupon_val":349.04,"coupon_pct":7.0,"next_coupon":"2026-12-09","nkd":1058.805125,"qty":1,"invested":111227.43,"value_now":110862.485125,"pnl_abs":-364.9448749999865,"pnl_pct":-0.3281069022272532,"status":"✅ в норме","color":"#e0af68"},{"name":"ВЭБ2Р-54В","asset":"bond","id":"RU000A10CTX6","currency":"USD","watch":false,"price":96.5791,"unit":"%","day_pct":1.43,"ytm":8.4498,"duration_years":3.5452054794520547,"maturity":"2030-08-31","maturity_disp":"31.08.2030","coupon_val":5.88,"coupon_pct":7.15,"next_coupon":"2026-08-22","nkd":76.470184,"qty":1,"invested":75015.77,"value_now":75842.774134,"pnl_abs":827.0041340000025,"pnl_pct":1.1024403722044078,"status":"✅ в норме","color":"#7dcfff"}],"watch":[{"name":"Сбер (наблюдение)","asset":"share","id":"SBER","currency":"RUB","watch":true,"price":269.78,"unit":"₽","day_pct":0.81,"ytm":null,"duration_years":null,"maturity":null,"maturity_disp":null,"coupon_val":null,"coupon_pct":null,"next_coupon":null,"nkd":null,"qty":77,"invested":19936.84,"value_now":20773.059999999998,"pnl_abs":836.2199999999975,"pnl_pct":4.1943457438590945,"status":"✅ в норме (стоп 220 / тейк 350)","avg_price":258.92,"dividend":"последняя отсечка 18.07.2025 · 34,84 ₽","stop":220,"take":350,"buy_date":"2026-07-21","color":"#3fb950"},{"name":"Озон (наблюдение)","asset":"share","id":"OZON","currency":"RUB","watch":true,"price":2830,"unit":"₽","day_pct":6.91,"ytm":null,"duration_years":null,"maturity":null,"maturity_disp":null,"coupon_val":null,"coupon_pct":null,"next_coupon":null,"nkd":null,"qty":10,"invested":28760.0,"value_now":28300,"pnl_abs":-460.0,"pnl_pct":-1.5994436717663423,"status":"⚡ движение +6,9% за день","avg_price":2876.0,"dividend":null,"stop":2400,"take":4500,"buy_date":"2026-07-21","color":"#6ea8fe"}],"totals":{"deposits":800000.0,"now":839889.161259,"profit":39889.16125899996,"profit_pct":4.986145157374994,"irr":0.09669185729321608,"cost_basis":852408.56,"price_pnl":-12519.3987410001,"price_pnl_pct":-1.4687087071251488,"reinvested":52408.560000000056,"wytm":13.841244272062314,"wdur":5.391576792070821,"count":8,"watch_now":49073.06,"watch_invested":48696.84,"grand_now":888962.221259,"grand_invested":848696.84,"grand_profit":40265.381259000045,"grand_profit_pct":4.744377422095745,"grand_irr":0.09743192858118555},"alloc":[{"name":"ОФЗ 26233","color":"#34d3c2","value":208035.96,"pct":24.769454065599867},{"name":"ОФЗ 26254","color":"#c98bff","value":199127.94,"pct":23.708835544621838},{"name":"ОФЗ 26249","color":"#6ea8fe","value":192654.54,"pct":22.9380909870547},{"name":"ОФЗ 33 CNY","color":"#e0af68","value":110862.485125,"pct":13.199656602165973},{"name":"ВЭБ2Р-54В","color":"#7dcfff","value":75842.774134,"pct":9.030093211384123},{"name":"ОФЗ 26238","color":"#f5a524","value":32872.200000000004,"pct":3.913873581928875},{"name":"ОФЗ 26247","color":"#3fb950","value":17156.0,"pct":2.0426504819139506},{"name":"ВИМ Ликвидность","color":"#f7768e","value":3337.262,"pct":0.3973455253306782}],"coupons_up":[{"name":"ОФЗ 26233","date":"2026-07-29","cash":10525.32},{"name":"ВЭБ2Р-54В","date":"2026-08-22","cash":461.286},{"name":"ОФЗ 26254","date":"2026-10-21","cash":14195.579999999998},{"name":"ОФЗ 26247","date":"2026-11-25","cash":1221.6},{"name":"ОФЗ 26238","date":"2026-12-02","cash":2124.0},{"name":"ОФЗ 33 CNY","date":"2026-12-09","cash":4025.8273600000007},{"name":"ОФЗ 26249","date":"2026-12-23","cash":12121.85}],"paid_coupons":[{"name":"ВЭБ2Р-54В","secid":"RU000A10CTX6","date":"2026-07-23","date_disp":"23.07","per_bond":5.88,"qty":1,"cash":461.286}],"paid_total":461.286,"reinvest_lookback_days":30,"events":[],"alerts":["OZON: сильное движение +6,9% за день"]};
 const NB=" "; // узкий неразрывный пробел
 const MON=["янв","фев","мар","апр","май","июн","июл","авг","сен","окт","ноя","дек"];
 function fi(n){ if(n===null||n===undefined||isNaN(n)) return "—";
@@ -210,6 +214,23 @@ kpis.forEach(k=>kw.appendChild(el(
   '<div class="card kpi"><div class="stripe" style="background:'+k.stripe+'"></div>'+
   '<div class="lbl">'+k.lbl+'</div><div class="big">'+k.big+'</div>'+
   '<div class="sub2">'+k.sub+'</div></div>')));
+
+// ---- grand total: весь портфель = ИИС + акции-наблюдение
+(function(){
+  if(T.grand_now==null) return;
+  const g=document.getElementById("grand"); g.style.display="block";
+  const gp=T.grand_profit||0; const gc=gp>=0?"pos":"neg"; const gs=gp>=0?"+":"−";
+  const gi=(T.grand_irr!=null)?T.grand_irr*100:null;
+  g.innerHTML='<div class="grandrow">'+
+    '<div><b>Σ Весь портфель</b> <span class="muted" style="font-size:12px">ИИС + акции (не только счёт)</span></div>'+
+    '<div class="gr">'+
+    '<span>вложено <b>'+fi(T.grand_invested)+' ₽</b></span>'+
+    '<span>сейчас <b>'+fi(T.grand_now)+' ₽</b></span>'+
+    '<span>прибыль <b class="'+gc+'">'+gs+fi(Math.abs(gp))+' ₽ ('+gs+f1(Math.abs(T.grand_profit_pct||0))+'%)</b></span>'+
+    '<span>IRR <b class="'+((gi||0)>=0?"pos":"neg")+'">'+(gi==null?"—":((gi>=0?"+":"−")+f1(Math.abs(gi))+'%'))+'</b> '+
+    '<span style="font-size:11px">с дат вложений</span></span>'+
+    '</div></div>';
+})();
 
 // ---- donut (allocation)
 (function(){
@@ -339,26 +360,24 @@ kpis.forEach(k=>kw.appendChild(el(
     h+='<div class="whead"><span><span class="wname">'+nm+'</span><span class="wtick">'+esc(p.id)+'</span></span>';
     h+='<span><span class="wprice">'+f2(p.price)+' ₽</span><span class="wday '+dc+'">'+
        (day>=0?"+":"−")+f2(Math.abs(day))+'% за день</span></span></div>';
-    h+='<div class="wstats"><span>вложено <b>'+fi(p.invested)+' ₽</b></span>'+
-       '<span>сейчас <b>'+fi(p.value_now)+' ₽</b></span>'+
-       '<span>P&L <b class="'+pc+'">'+(pnl>=0?"+":"−")+fi(Math.abs(pnl))+' ₽ ('+
-       (pnl>=0?"+":"−")+f1(Math.abs(p.pnl_pct||0))+'%)</b></span></div>';
-    const entry=(p.avg_price!=null)?p.avg_price:null;
-    if(p.stop!=null && p.take!=null && p.price!=null && p.take>p.stop){
-      const lo=p.stop, hi=p.take;
-      const pct=v=>Math.max(1.5,Math.min(98.5,(v-lo)/(hi-lo)*100));
-      const e=pct(entry!=null?entry:p.price), c=pct(p.price);
-      const l=Math.min(e,c), w=Math.max(.8,Math.abs(c-e));
-      const col=(entry==null||p.price>=entry)?"var(--up)":"var(--down)";
-      h+='<div class="gauge"><div class="gtrack">'+
-         '<div class="gfill" style="left:'+l+'%;width:'+w+'%;background:'+col+'"></div>'+
-         (entry!=null?'<div class="gentry" style="left:'+e+'%"></div>':'')+
-         '<div class="gdot" style="left:'+c+'%;background:'+col+'"></div></div>'+
-         '<div class="glabels"><span>стоп '+fi(p.stop)+'</span>'+
-         (entry!=null?'<span>вход '+f2(entry)+'</span>':'')+
-         '<span>тейк '+fi(p.take)+'</span></div></div>';
-    }
-    if(p.dividend) h+='<div class="muted" style="font-size:11.5px;margin-top:8px">дивиденды: '+esc(p.dividend)+'</div>';
+    // столбчатая «было -> стало»: вложено vs стоимость сейчас
+    const mx=Math.max(p.invested||0,p.value_now||0,1);
+    const hb=Math.max(4,(p.invested||0)/mx*84), hn=Math.max(4,(p.value_now||0)/mx*84);
+    const bcol=pnl>=0?"var(--up)":"var(--down)";
+    h+='<div class="bs">'+
+      '<div class="bscol"><div class="bsval">'+fi(p.invested)+' ₽</div>'+
+        '<div class="bsbar" style="height:'+hb+'px;background:#5d6a96"></div>'+
+        '<div class="bslbl">было · вложено</div></div>'+
+      '<div class="bscol"><div class="bsval '+pc+'">'+fi(p.value_now)+' ₽</div>'+
+        '<div class="bsbar" style="height:'+hn+'px;background:'+bcol+'"></div>'+
+        '<div class="bslbl">стало · сейчас</div></div>'+
+      '<div class="bsdelta '+pc+'">'+(pnl>=0?"+":"−")+fi(Math.abs(pnl))+' ₽<br>'+
+        '<span>'+(pnl>=0?"+":"−")+f1(Math.abs(p.pnl_pct||0))+'%</span></div>'+
+      '</div>';
+    let ft=[];
+    if(p.stop!=null&&p.take!=null) ft.push('пороги: стоп '+fi(p.stop)+' ₽ · тейк '+fi(p.take)+' ₽');
+    if(p.dividend) ft.push('дивиденды: '+esc(p.dividend));
+    if(ft.length) h+='<div class="muted" style="font-size:11px;margin-top:10px">'+ft.join(' · ')+'</div>';
     h+='</div>';
     box.appendChild(el(h));
   });
